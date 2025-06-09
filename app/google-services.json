@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "795566117180",
+    "project_id": "uptrend-27f98",
+    "storage_bucket": "uptrend-27f98.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795566117180:android:7832791975ee27eeb5ce39",
+        "android_client_info": {
+          "package_name": "com.example.mainapplicationproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLJhs0RoSWBU5jmZ_3sgtry5Dz0TtCq2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
