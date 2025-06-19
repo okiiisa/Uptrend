@@ -1,5 +1,7 @@
 package com.example.mainapplicationproject
 
+import com.example.mainapplicationproject.screens.SignUpScreen
+import com.example.mainapplicationproject.screens.LoginScreen
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -9,6 +11,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +19,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainApplicationProjectTheme {
+                SignUpScreen()
                 // You can place your UI here later
             }
         }
