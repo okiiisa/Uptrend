@@ -56,6 +56,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.2.1")
     implementation("com.google.firebase:firebase-firestore:25.1.4")
     implementation("com.google.firebase:firebase-bom:33.15.0")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
