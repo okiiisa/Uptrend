@@ -47,7 +47,12 @@ fun LoginScreen(navController: NavController) {
                         password,
                         onSuccess = { name ->
                             Toast.makeText(context, "Welcome $name!", Toast.LENGTH_SHORT).show()
-                            // navController.navigate("home") // if you have a home screen later
+                            navController.navigate("home") {
+                                popUpTo("login") {inclusive = true}
+                            }
+                        },
+                        onFailure = {
+                            Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show()
                         }
                     )
                 } else {

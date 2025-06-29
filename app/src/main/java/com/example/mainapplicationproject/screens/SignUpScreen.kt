@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -27,7 +28,8 @@ fun SignUpScreen(navController: NavController) {
         modifier = Modifier
             .padding(24.dp)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally // ✅ Added this
     ) {
         Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium)
 
@@ -35,14 +37,18 @@ fun SignUpScreen(navController: NavController) {
             value = fullName,
             onValueChange = { fullName = it },
             label = { Text("Full Name") },
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
         )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
         )
 
         OutlinedTextField(
@@ -73,16 +79,27 @@ fun SignUpScreen(navController: NavController) {
                         fullName,
                         onSuccess = {
                             Toast.makeText(context, "Signup Successful!", Toast.LENGTH_SHORT).show()
-                            navController.navigate("login")
+                            navController.navigate("login") {
+                                popUpTo("signup") { inclusive = true }
+                            }
                         }
                     )
                 } else {
                     Toast.makeText(context, "Fill all fields", Toast.LENGTH_SHORT).show()
                 }
             },
-            modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
         ) {
             Text("Register")
+        }
+
+        TextButton(
+            onClick = { navController.navigate("login") },
+            modifier = Modifier.padding(top = 8.dp) // ✅ No need for .align() now
+        ) {
+            Text("Already have an account? Login")
         }
     }
 }
