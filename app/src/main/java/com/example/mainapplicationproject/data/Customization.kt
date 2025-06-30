@@ -1,4 +1,4 @@
-package com.example.yourapp.data
+package com.example.mainapplicationproject.data
 
 data class Customization(
     val id: String = "",

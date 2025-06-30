@@ -25,7 +25,8 @@ object AuthRepository {
                     val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
                     val user = hashMapOf(
                         "fullName" to fullName,
-                        "email" to email
+                        "email" to email,
+                        "isAdmin" to false // default non-admin
                     )
                     db.collection("users").document(userId).set(user)
                         .addOnSuccessListener {
@@ -49,7 +50,7 @@ object AuthRepository {
         context: Context,
         email: String,
         password: String,
-        onSuccess: (String) -> Unit = {},
+        onResult: (Boolean /* isAdmin */) -> Unit,
         onFailure: (Exception?) -> Unit = {}
     ) {
         auth.signInWithEmailAndPassword(email, password)
@@ -57,10 +58,11 @@ object AuthRepository {
                 val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
                 db.collection("users").document(userId).get()
                     .addOnSuccessListener { doc ->
+                        val isAdmin = doc.getBoolean("isAdmin") ?: false
                         val name = doc.getString("fullName") ?: "User"
                         Toast.makeText(context, "Welcome $name!", Toast.LENGTH_SHORT).show()
-                        Log.d("Firebase", "Welcome $name!")
-                        onSuccess(name)
+                        Log.d("LOGIN_FLOW", "Login successful. isAdmin: $isAdmin")
+                        onResult(isAdmin)
                     }
                     .addOnFailureListener {
                         Toast.makeText(context, "Failed to get user info.", Toast.LENGTH_SHORT).show()
@@ -69,8 +71,30 @@ object AuthRepository {
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Login failed: ${it.localizedMessage}", Toast.LENGTH_SHORT).show()
-                Log.e("Firebase", "Login failed", it)
+                Log.e("LOGIN_FLOW", "Login failed", it)
                 onFailure(it)
             }
     }
+
+    fun checkIfAdmin(onResult: (Boolean) -> Unit) {
+        val uid = auth.currentUser?.uid
+        Log.d("AUTH_UID", "Checking admin for UID: $uid")  // ← This logs the UID
+
+        if (uid == null) {
+            onResult(false)
+            return
+        }
+
+        db.collection("users").document(uid).get()
+            .addOnSuccessListener { document ->
+                val isAdmin = document.getBoolean("isAdmin") ?: false
+                Log.d("ADMIN_CHECK", "isAdmin: $isAdmin for UID: $uid")
+                onResult(isAdmin)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("ADMIN_CHECK", "Error checking admin status", exception)
+                onResult(false)
+            }
+    }
+
 }

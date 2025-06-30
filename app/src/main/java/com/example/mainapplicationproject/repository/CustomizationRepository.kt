@@ -1,6 +1,7 @@
-package com.example.yourapp.repository
+package com.example.mainapplicationproject.repository
 
-import com.example.yourapp.data.Customization
+
+import com.example.mainapplicationproject.data.Customization
 import com.google.firebase.firestore.FirebaseFirestore
 
 object CustomizationRepository {

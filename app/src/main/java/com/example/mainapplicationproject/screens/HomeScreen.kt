@@ -13,8 +13,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.yourapp.data.Product
-import com.example.yourapp.repository.ProductRepository
+import com.example.mainapplicationproject.data.Product
+import com.example.mainapplicationproject.repository.ProductRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

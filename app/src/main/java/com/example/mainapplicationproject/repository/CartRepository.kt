@@ -1,6 +1,7 @@
-package com.example.yourapp.repository
+package com.example.mainapplicationproject.repository
 
-import com.example.yourapp.data.CartItem
+
+import com.example.mainapplicationproject.data.CartItem
 import com.google.firebase.firestore.FirebaseFirestore
 
 object CartRepository {

@@ -1,4 +1,4 @@
-package com.example.yourapp.data
+package com.example.mainapplicationproject.data
 
 data class Product(
     val id: String = "",

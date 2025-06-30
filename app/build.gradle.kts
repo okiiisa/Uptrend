@@ -59,6 +59,16 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.compose.material3:material3:1.2.1")
+    implementation ("com.google.firebase:firebase-storage-ktx")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation ("androidx.activity:activity-ktx:1.9.0")
+    implementation ("androidx.compose:compose-bom:2025.06.01")
+    implementation ("androidx.compose.material3:material3")
+    implementation ("androidx.activity:activity-compose:1.9.0")
+    implementation ("io.coil-kt:coil-compose:2.4.0") // for image loading
+
+
 
 
     testImplementation(libs.junit)
