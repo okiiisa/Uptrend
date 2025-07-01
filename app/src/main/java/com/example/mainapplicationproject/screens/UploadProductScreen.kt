@@ -33,7 +33,6 @@ fun UploadProductScreen() {
 
     when (isAdmin) {
         null -> {
-            // Loading state
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -43,7 +42,6 @@ fun UploadProductScreen() {
         }
 
         false -> {
-            // Not authorized
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -58,7 +56,6 @@ fun UploadProductScreen() {
         }
 
         true -> {
-            // Authorized admin UI
             UploadProductForm()
         }
     }
@@ -146,6 +143,7 @@ private fun UploadProductForm() {
                 if (name.isNotBlank() && price.isNotBlank() && category.isNotBlank() && imageUri != null) {
                     coroutineScope.launch {
                         ProductRepository.uploadProductWithImage(
+                            context = context,
                             name = name,
                             price = price.toDoubleOrNull() ?: 0.0,
                             category = category,

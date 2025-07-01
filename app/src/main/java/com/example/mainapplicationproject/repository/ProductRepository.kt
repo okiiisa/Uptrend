@@ -1,6 +1,6 @@
 package com.example.mainapplicationproject.repository
 
-
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.mainapplicationproject.data.Product
@@ -24,7 +24,9 @@ object ProductRepository {
     }
 
     fun fetchProductsByCategory(category: String, onResult: (List<Product>) -> Unit) {
-        db.collection("products").whereEqualTo("category", category).get()
+        db.collection("products")
+            .whereEqualTo("category", category)
+            .get()
             .addOnSuccessListener { snapshot ->
                 val products = snapshot.map { it.toObject(Product::class.java).copy(id = it.id) }
                 onResult(products)
@@ -35,6 +37,7 @@ object ProductRepository {
     }
 
     fun uploadProductWithImage(
+        context: Context,
         name: String,
         price: Double,
         category: String,
@@ -42,25 +45,39 @@ object ProductRepository {
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val imageRef = storage.reference.child("product_images/${UUID.randomUUID()}.jpg")
+        val fileName = UUID.randomUUID().toString() + ".jpg"
+        val imageRef = storage.reference.child("product_images/$fileName")
 
-        imageRef.putFile(imageUri)
-            .continueWithTask { task ->
-                if (!task.isSuccessful) throw task.exception!!
-                imageRef.downloadUrl
-            }.addOnSuccessListener { downloadUrl ->
-                val product = Product(
-                    name = name,
-                    price = price,
-                    category = category,
-                    imageUrl = downloadUrl.toString()
-                )
-                db.collection("products")
-                    .add(product)
-                    .addOnSuccessListener { onSuccess() }
-                    .addOnFailureListener { e -> onFailure(e) }
-            }.addOnFailureListener { e ->
-                onFailure(e)
+        try {
+            val inputStream = context.contentResolver.openInputStream(imageUri)
+            if (inputStream == null) {
+                onFailure(Exception("Unable to open image stream"))
+                return
             }
+
+            imageRef.putStream(inputStream)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) throw task.exception ?: Exception("Upload failed")
+                    imageRef.downloadUrl
+                }
+                .addOnSuccessListener { downloadUrl ->
+                    val product = Product(
+                        name = name,
+                        price = price,
+                        category = category,
+                        imageUrl = downloadUrl.toString()
+                    )
+                    db.collection("products")
+                        .add(product)
+                        .addOnSuccessListener { onSuccess() }
+                        .addOnFailureListener { e -> onFailure(e) }
+                }
+                .addOnFailureListener { e ->
+                    onFailure(e)
+                }
+
+        } catch (e: Exception) {
+            onFailure(e)
+        }
     }
 }
