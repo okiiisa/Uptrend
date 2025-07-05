@@ -57,7 +57,7 @@ fun LoginScreen(navController: NavController) {
                         onResult = { isAdmin ->
                             loading = false
                             if (isAdmin) {
-                                navController.navigate("upload")
+                                navController.navigate("adminHome")
                             } else {
                                 navController.navigate("home")
                             }

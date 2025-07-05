@@ -22,4 +22,18 @@ object CartRepository {
                 onResult(items)
             }
     }
+    fun clearCart(userId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("users").document(userId).collection("cart").get()
+            .addOnSuccessListener { snapshot ->
+                val batch = db.batch()
+                for (doc in snapshot.documents) {
+                    batch.delete(doc.reference)
+                }
+                batch.commit()
+                    .addOnSuccessListener { onSuccess() }
+                    .addOnFailureListener { e -> onFailure(e) }
+            }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
 }

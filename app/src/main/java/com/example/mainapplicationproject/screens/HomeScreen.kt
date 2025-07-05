@@ -4,8 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,12 +19,12 @@ import com.example.mainapplicationproject.repository.ProductRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController){
-    var products by remember { mutableStateOf <List<Product>>(emptyList()) }
+fun HomeScreen(navController: NavController) {
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
-    //Fetch products on first load
-    LaunchedEffect(Unit){
+    // Fetch products on first load
+    LaunchedEffect(Unit) {
         ProductRepository.fetchProducts {
             products = it
             isLoading = false
@@ -32,7 +33,18 @@ fun HomeScreen(navController: NavController){
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Home") }
+            TopAppBar(
+                title = { Text("Home") },
+                actions = {
+                    IconButton(onClick = {
+                        navController.navigate("cart")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "Cart"
+                        )
+                    }
+                }
             )
         }
     ) { padding ->
@@ -57,7 +69,6 @@ fun HomeScreen(navController: NavController){
                     ProductItem(product = product) {
                         navController.navigate("productDetails/${product.id}")
                     }
-
                 }
             }
         }
@@ -75,10 +86,10 @@ fun ProductItem(product: Product, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            verticalAlignment =  Alignment.CenterVertically
-        ){
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
-                painter =  rememberAsyncImagePainter(product.imageUrl),
+                painter = rememberAsyncImagePainter(product.imageUrl),
                 contentDescription = product.name,
                 modifier = Modifier
                     .size(64.dp)

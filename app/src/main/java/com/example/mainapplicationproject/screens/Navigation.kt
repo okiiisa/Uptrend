@@ -17,6 +17,8 @@ fun Navigation() {
         composable("login") { LoginScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("upload") { UploadProductScreen() }
+        composable("adminHome") {AdminHomeScreen()}
+        composable("cart") { CartScreen(navController) }
         composable("productDetails/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")
             ProductDetailsScreen(navController, productId ?: "")
