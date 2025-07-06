@@ -7,50 +7,71 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.mainapplicationproject.loginUser
+import androidx.navigation.NavController
+import androidx.compose.ui.Alignment
+import com.example.mainapplicationproject.repository.AuthRepository
+
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
-            .padding(24.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center
-    ){
-        Text(text = "Login", style = MaterialTheme.typography.headlineMedium)
-
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = {  password = it },
+            onValueChange = { password = it },
             label = { Text("Password") },
-            modifier = Modifier
-                .padding(top = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         )
-        Button(
-            onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()){
-                    loginUser(email, password)
-                    Toast.makeText(context, "Lgging in...", Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    Toast.makeText(context, "Enter email and password", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
-        ){
-            Text("Login")
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (loading) {
+            CircularProgressIndicator()
+        } else {
+            Button(
+                onClick = {
+                    loading = true
+                    AuthRepository.loginUser(
+                        context = context,
+                        email = email,
+                        password = password,
+                        onResult = { isAdmin ->
+                            loading = false
+                            if (isAdmin) {
+                                navController.navigate("adminHome")
+                            } else {
+                                navController.navigate("home")
+                            }
+                        },
+                        onFailure = {
+                            loading = false
+                            Toast.makeText(context, "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Login")
+            }
         }
     }
 }
-
