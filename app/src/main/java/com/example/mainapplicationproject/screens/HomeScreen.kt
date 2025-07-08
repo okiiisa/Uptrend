@@ -1,8 +1,12 @@
 package com.example.mainapplicationproject.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -17,7 +21,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.mainapplicationproject.data.Product
 import com.example.mainapplicationproject.repository.ProductRepository
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
@@ -34,7 +38,15 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Home") },
+                title = {
+                    Text(
+                        "Home",
+                    style = MaterialTheme.typography.titleLarge
+                    )
+                        },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
                 actions = {
                     IconButton(onClick = {
                         navController.navigate("cart")
@@ -58,15 +70,17 @@ fun HomeScreen(navController: NavController) {
                 CircularProgressIndicator()
             }
         } else {
-            LazyColumn(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(products.size) { index ->
-                    val product = products[index]
-                    ProductItem(product = product) {
+                items(products) { product ->
+                    ProductGridItem(product = product) {
                         navController.navigate("productDetails/${product.id}")
                     }
                 }
@@ -76,30 +90,39 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun ProductItem(product: Product, onClick: () -> Unit) {
+fun ProductGridItem(product: Product, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(4.dp)
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(6.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
                 painter = rememberAsyncImagePainter(product.imageUrl),
                 contentDescription = product.name,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
-                    .padding(end = 16.dp),
-                contentScale = ContentScale.Crop
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
-            Column {
-                Text(text = product.name, style = MaterialTheme.typography.titleMedium)
-                Text(text = "Ksh ${product.price}", style = MaterialTheme.typography.bodyMedium)
-            }
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = product.name,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1
+            )
+            Text(
+                text = "Ksh ${product.price}",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
+
